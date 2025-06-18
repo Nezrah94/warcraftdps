@@ -25,7 +25,8 @@ app.get('/api/articles', (req, res) => {
 
 // === Auth Battle.net ===
 app.get('/auth/battlenet', (req, res) => {
-  const authUrl = `https://oauth.battle.net/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid`;
+  const state = Math.random().toString(36).substring(2); // une chaîne aléatoire
+  const authUrl = `https://oauth.battle.net/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid&state=${state}`;
   res.redirect(authUrl);
 });
 
