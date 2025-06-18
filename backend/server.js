@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 const CLIENT_ID = process.env.BATTLENET_CLIENT_ID;
 const CLIENT_SECRET = process.env.BATTLENET_CLIENT_SECRET;
-const REDIRECT_URI = 'https://ton-backend.onrender.com/auth/battlenet/callback'; // remplace par ton vrai domaine
+const REDIRECT_URI = 'https://warcraftdps.onrender.com/auth/battlenet/callback'; // remplace par ton vrai domaine
 
 app.use(cors());
 app.use(express.json());
