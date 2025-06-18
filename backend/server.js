@@ -9,12 +9,10 @@ const PORT = process.env.PORT || 3000;
 
 const CLIENT_ID = process.env.BATTLENET_CLIENT_ID;
 const CLIENT_SECRET = process.env.BATTLENET_CLIENT_SECRET;
-const REDIRECT_URI = 'https://ton-backend.onrender.com/auth/battlenet/callback'; // 🔁 Remplace par ton vrai domaine
+const REDIRECT_URI = 'https://ton-backend.onrender.com/auth/battlenet/callback'; // remplace par ton vrai domaine
 
 app.use(cors());
 app.use(express.json());
-
-// Sert le frontend statique depuis la racine du projet
 app.use(express.static(path.join(__dirname, '../')));
 
 // === API : Articles ===
@@ -23,15 +21,17 @@ app.get('/api/articles', (req, res) => {
   res.json(JSON.parse(data));
 });
 
-// === Auth Battle.net ===
+// === Auth Battle.net : redirection vers Battle.net avec paramètre `state` ===
 app.get('/auth/battlenet', (req, res) => {
-  const state = Math.random().toString(36).substring(2); // une chaîne aléatoire
+  const state = Math.random().toString(36).substring(2); // chaîne aléatoire
   const authUrl = `https://oauth.battle.net/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid&state=${state}`;
   res.redirect(authUrl);
 });
 
+// === Callback après connexion Battle.net ===
 app.get('/auth/battlenet/callback', async (req, res) => {
   const { code } = req.query;
+
   try {
     const tokenRes = await axios.post('https://oauth.battle.net/token', null, {
       params: {
@@ -69,11 +69,7 @@ app.get('/auth/battlenet/callback', async (req, res) => {
   }
 });
 
-// Fallback vers index.html pour toute autre route (si React, SPA ou pages frontend)
+// === Fallback vers le frontend ===
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Serveur backend + frontend actif sur le port ${PORT}`);
 });
