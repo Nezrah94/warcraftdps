@@ -2,44 +2,36 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const CLIENT_ID = process.env.BATTLENET_CLIENT_ID;
+const CLIENT_SECRET = process.env.BATTLENET_CLIENT_SECRET;
+const REDIRECT_URI = 'https://ton-backend.onrender.com/auth/battlenet/callback'; // 🔁 Remplace par ton vrai domaine
+
 app.use(cors());
 app.use(express.json());
 
-// 📁 Sert les fichiers frontend (HTML/CSS/JS) à partir du dossier parent
+// Sert le frontend statique depuis la racine du projet
 app.use(express.static(path.join(__dirname, '../')));
 
-// 📰 API : Articles
+// === API : Articles ===
 app.get('/api/articles', (req, res) => {
   const data = fs.readFileSync(path.join(__dirname, 'data', 'articles.json'));
   res.json(JSON.parse(data));
 });
 
-// 🔁 Pour toute autre route, renvoyer index.html (permet le routage frontend si besoin)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
-});
-
-const axios = require('axios');
-
-const CLIENT_ID = process.env.BATTLENET_CLIENT_ID;
-const CLIENT_SECRET = process.env.BATTLENET_CLIENT_SECRET;
-const REDIRECT_URI = 'https://ton-backend.onrender.com/auth/battlenet/callback';
-
-// Étape 1 : Rediriger l'utilisateur vers Battle.net
+// === Auth Battle.net ===
 app.get('/auth/battlenet', (req, res) => {
   const authUrl = `https://oauth.battle.net/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid`;
   res.redirect(authUrl);
 });
 
-// Étape 2 : Récupérer le code et échanger contre un token
 app.get('/auth/battlenet/callback', async (req, res) => {
   const { code } = req.query;
   try {
-    // Échange code -> token
     const tokenRes = await axios.post('https://oauth.battle.net/token', null, {
       params: {
         grant_type: 'authorization_code',
@@ -57,7 +49,6 @@ app.get('/auth/battlenet/callback', async (req, res) => {
 
     const accessToken = tokenRes.data.access_token;
 
-    // Appel à l'API d'identité pour récupérer l'utilisateur
     const userRes = await axios.get('https://oauth.battle.net/oauth/userinfo', {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -66,7 +57,6 @@ app.get('/auth/battlenet/callback', async (req, res) => {
 
     const user = userRes.data;
 
-    // Pour le test, on affiche juste dans le navigateur
     res.send(`
       <h1>Bienvenue, ${user.battletag} !</h1>
       <pre>${JSON.stringify(user, null, 2)}</pre>
@@ -78,7 +68,11 @@ app.get('/auth/battlenet/callback', async (req, res) => {
   }
 });
 
+// Fallback vers index.html pour toute autre route (si React, SPA ou pages frontend)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../index.html'));
+});
 
 app.listen(PORT, () => {
-  console.log(`Serveur backend et frontend démarré sur le port ${PORT}`);
+  console.log(`Serveur backend + frontend actif sur le port ${PORT}`);
 });
