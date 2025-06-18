@@ -1,0 +1,208 @@
+header {
+    background-color: var(--black-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid var(--neon-green);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: var(--header-height);
+}
+
+.header-content {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+#site-logo-link {
+    text-decoration: none;
+}
+
+.site-title {
+    font-family: var(--font-primary);
+    font-size: 1.8rem;
+    margin: 0;
+    line-height: 1;
+    text-shadow: none;
+}
+
+.logo-warcraft {
+    color: var(--neon-green);
+    text-shadow: var(--accent-glow);
+}
+
+.logo-dps {
+    color: var(--white);
+    font-weight: normal;
+    text-shadow: var(--accent-glow);
+}
+
+#logo-img {
+    display: none;
+}
+
+nav .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav .nav-link {
+    font-family: var(--font-primary);
+    font-size: 1.1em;
+    padding: 0.5em 0;
+    position: relative;
+    color: var(--neon-green);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--white);
+    transition: width 0.3s ease;
+}
+
+nav .nav-link.language-toggle::after {
+    display: none;
+}
+
+nav .nav-link:hover,
+nav .nav-link.active {
+    color: var(--white);
+    text-shadow: var(--accent-glow);
+}
+
+nav .nav-link:hover::after,
+nav .nav-link.active::after {
+    width: 100%;
+}
+
+#language-toggle-button {
+    font-family: var(--font-primary);
+    font-size: 0.9em;
+    padding: 0.3em 0.6em;
+    border: 1px solid var(--neon-green);
+    border-radius: 3px;
+    color: var(--neon-green);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    text-shadow: none;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3em;
+}
+
+#language-toggle-button:hover {
+    background-color: var(--neon-green);
+    color: var(--black-bg);
+    box-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+    text-shadow: none;
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background-color: var(--neon-green);
+    margin: 5px 0;
+    transition: all 0.3s ease-in-out;
+    border-radius: 1px;
+    box-shadow: 0 0 3px var(--neon-green);
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    header {
+        padding: 0;
+    }
+
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+
+    nav .nav-list {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        width: 100%;
+        background-color: var(--dark-bg);
+        border-top: 1px solid var(--neon-green);
+        padding: 1rem 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+
+    nav .nav-list.open {
+        display: flex;
+    }
+
+    nav li {
+        text-align: center;
+        margin: 0.8rem 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu-toggle.open span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+    }
+    .menu-toggle.open span:nth-child(2) {
+        opacity: 0;
+    }
+    .menu-toggle.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    nav .nav-link.language-toggle {
+        display: block;
+        margin: 0.8rem auto;
+        padding: 0.5em 1em;
+    }
+
+    #language-toggle-button {
+        margin-left: 0;
+        margin-bottom: 0.8rem;
+    }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Aborder un nouveau progress",
+    "summary": "Cet article aborde les \u00e9tapes \u00e0 suivre et les points essentiels pour aborder un nouveau progress en raid, pr\u00e9parer son \u00e9quipe et maximiser l'efficacit\u00e9 des sessions de progression.",
+    "image": "/asset_article-placeholder.png"
+  },
+  {
+    "id": 2,
+    "title": "Se d\u00e9placer correctement",
+    "summary": "Un focus sur l'art du d\u00e9placement en raid et en donjon. D\u00e9couvrez comment optimiser vos d\u00e9placements pour \u00e9viter les d\u00e9g\u00e2ts inutiles et maximiser votre DPS ou HPS.",
+    "image": "/asset_article-placeholder.png"
+  },
+  {
+    "id": 3,
+    "title": "Le bon raideur",
+    "summary": "\u00catre un bon raideur ne se limite pas \u00e0 faire du DPS : retrouvez des conseils pour am\u00e9liorer votre mentalit\u00e9, votre communication et votre performance globale dans le groupe !",
+    "image": "/asset_article-placeholder.png"
+  }
+]
