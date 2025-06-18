@@ -73,3 +73,6 @@ app.get('/auth/battlenet/callback', async (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
+app.listen(PORT, () => {
+  console.log(`✅ Serveur lancé sur le port ${PORT} à ${new Date().toISOString()}`);
+});
