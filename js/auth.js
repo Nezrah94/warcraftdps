@@ -60,7 +60,8 @@ window.addEventListener('DOMContentLoaded', () => {
 "
 onmouseover="this.style.backgroundColor='#005fa3';"
 onmouseout="this.style.backgroundColor='#0078CF';">
-  Connexion <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Blizzard_Entertainment_Logo_2015.svg" alt="Blizzard Icon" style="height: 20px; width: 20px;">
+  Connexion <img src="/blizzard-icon.webp" alt="Battle.net"
+    style="width: 20px; height: 20px; margin-left: 6px; border: 1px solid black; border-radius: 4px; background-color: white;" />
 </a>`;
   }
 });

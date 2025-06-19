@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const axios = require('axios');
 const BattlenetStrategy = require('passport-battlenet').Strategy;
@@ -21,7 +22,11 @@ app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: false, // ← MODIFIÉ
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    ttl: 14 * 24 * 60 * 60 // 14 jours
+  })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,7 +52,7 @@ passport.use('battlenet', new BattlenetStrategy({
 
 // 3. Routes d'authentification
 app.get('/auth/battlenet',
-  passport.authenticate('battlenet', { state: true, session: false })
+  passport.authenticate('battlenet', { state: true })
 );
 app.get('/auth/battlenet/callback',
   passport.authenticate('battlenet', { failureRedirect: '/' }),
