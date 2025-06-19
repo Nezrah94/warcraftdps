@@ -1,86 +1,83 @@
-
 const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const axios = require('axios');
+const BattlenetStrategy = require('passport-battlenet').Strategy;
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const CLIENT_ID = process.env.BATTLENET_CLIENT_ID;
-const CLIENT_SECRET = process.env.BATTLENET_CLIENT_SECRET;
-const REDIRECT_URI = 'https://warcraftdps.onrender.com/auth/battlenet/callback';
-
-app.use(cors());
+// 1. Middlewares nécessaires
 app.use(express.json());
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'default_secret_key',
+  resave: false,
+  saveUninitialized: true,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 2. Passport Battle.net config
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
+
+passport.use(new BattlenetStrategy({
+  clientID: process.env.BNET_CLIENT_ID,
+  clientSecret: process.env.BNET_CLIENT_SECRET,
+  callbackURL: process.env.BNET_CALLBACK_URL,
+  region: "eu"
+}, (accessToken, refreshToken, profile, done) => {
+  return done(null, profile);
+}));
+
+// 3. Routes d'authentification
+app.get('/auth/battlenet', passport.authenticate('battlenet'));
+app.get('/auth/battlenet/callback',
+  passport.authenticate('battlenet', { failureRedirect: '/' }),
+  (req, res) => {
+    res.cookie('battletag', req.user.battletag, { maxAge: 86400000 });
+    res.redirect('/');
+  }
+);
+
+// 4. API d'articles
+app.get('/api/articles', (req, res) => {
+  const articles = [
+    {
+      id: 1,
+      title: "Aborder un nouveau progress",
+      summary: "Cet article aborde les étapes à suivre...",
+      image: "/asset_article-placeholder.png"
+    },
+    {
+      id: 2,
+      title: "Se déplacer correctement",
+      summary: "Un focus sur l'art du déplacement...",
+      image: "/asset_article-placeholder.png"
+    },
+    {
+      id: 3,
+      title: "Le bon raideur",
+      summary: "Être un bon raideur ne se limite pas à faire du DPS...",
+      image: "/asset_article-placeholder.png"
+    }
+  ];
+  res.json(articles);
+});
+
+// 5. Servir les fichiers frontend statiques
 app.use(express.static(path.join(__dirname, '../')));
 
-// === API : Articles ===
-app.get('/api/articles', (req, res) => {
-  const data = fs.readFileSync(path.join(__dirname, 'data', 'articles.json'));
-  res.json(JSON.parse(data));
-});
-
-// === Auth Battle.net ===
-app.get('/auth/battlenet', (req, res) => {
-  const state = Math.random().toString(36).substring(2);
-  const authUrl = `https://oauth.battle.net/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid&state=${state}`;
-  res.redirect(authUrl);
-});
-
-// === Callback Battle.net ===
-app.get('/auth/battlenet/callback', async (req, res) => {
-  const { code } = req.query;
-
-  try {
-    const tokenRes = await axios.post('https://oauth.battle.net/token', null, {
-      params: {
-        grant_type: 'authorization_code',
-        code,
-        redirect_uri: REDIRECT_URI
-      },
-      auth: {
-        username: CLIENT_ID,
-        password: CLIENT_SECRET
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
-
-    const accessToken = tokenRes.data.access_token;
-
-    const userRes = await axios.get('https://oauth.battle.net/oauth/userinfo', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-
-    const user = userRes.data;
-
-    res.cookie('battletag', user.battletag, {
-      httpOnly: false,
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'Lax'
-    });
-
-    res.redirect('/');
-
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).send("Erreur lors de l'authentification.");
-  }
-});
-
-// === Fallback ===
+// 6. Fallback pour les routes HTML
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
+// 7. Démarrage serveur
 app.listen(PORT, () => {
-  console.log(`✅ Serveur lancé sur le port ${PORT} à ${new Date().toISOString()}`);
+  console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
