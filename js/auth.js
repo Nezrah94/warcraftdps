@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (battletag) {
     authZone.innerHTML = `👋 ${battletag}`;
   } else {
-    authZone.innerHTML = \`
+    authZone.innerHTML = `
       <a href="/auth/battlenet" style="
         padding: 8px 12px;
         background-color: #0078CF;
@@ -22,6 +22,6 @@ window.addEventListener('DOMContentLoaded', () => {
         text-decoration: none;
         font-weight: bold;
       ">Connexion Battle.net</a>
-    \`;
+    `;
   }
 });
