@@ -54,7 +54,14 @@ app.get('/auth/battlenet/callback',
     res.redirect('/');
   }
 );
-
+app.get('/logout', (req, res) => {
+  req.logout(() => {
+    res.clearCookie('battletag');
+    req.session.destroy(() => {
+      res.redirect('/');
+    });
+  });
+});
 // 4. API d'articles
 app.get('/api/articles', (req, res) => {
   const articles = [
