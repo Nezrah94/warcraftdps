@@ -36,12 +36,12 @@ if (!process.env.BNET_CLIENT_ID || !process.env.BNET_CLIENT_SECRET || !process.e
   process.exit(1);
 }
 
-passport.use(new BattlenetStrategy({
+passport.use('battlenet', new BattleNetStrategy({
   clientID: process.env.BNET_CLIENT_ID,
   clientSecret: process.env.BNET_CLIENT_SECRET,
   callbackURL: process.env.BNET_CALLBACK_URL,
   region: "eu"
-}, (accessToken, refreshToken, profile, done) => {
+}, function(accessToken, refreshToken, profile, done) {
   return done(null, profile);
 }));
 
