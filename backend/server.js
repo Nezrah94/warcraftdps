@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
