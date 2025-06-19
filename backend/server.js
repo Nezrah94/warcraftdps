@@ -10,6 +10,11 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// DEBUG: Vérifier les variables d'environnement
+console.log("[DEBUG] BNET_CLIENT_ID:", process.env.BNET_CLIENT_ID);
+console.log("[DEBUG] BNET_CLIENT_SECRET:", process.env.BNET_CLIENT_SECRET);
+console.log("[DEBUG] BNET_CALLBACK_URL:", process.env.BNET_CALLBACK_URL);
+
 // 1. Middlewares nécessaires
 app.use(express.json());
 app.use(cookieParser());
@@ -24,6 +29,12 @@ app.use(passport.session());
 // 2. Passport Battle.net config
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
+
+// Évite le crash si les variables sont manquantes
+if (!process.env.BNET_CLIENT_ID || !process.env.BNET_CLIENT_SECRET || !process.env.BNET_CALLBACK_URL) {
+  console.error("❌ Erreur : Variables BNET_CLIENT_ID, BNET_CLIENT_SECRET ou BNET_CALLBACK_URL manquantes.");
+  process.exit(1);
+}
 
 passport.use(new BattlenetStrategy({
   clientID: process.env.BNET_CLIENT_ID,
