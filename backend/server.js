@@ -45,18 +45,21 @@ passport.use('battlenet', new BattlenetStrategy({
   clientID: process.env.BNET_CLIENT_ID,
   clientSecret: process.env.BNET_CLIENT_SECRET,
   callbackURL: process.env.BNET_CALLBACK_URL,
-  region: "eu"
-}, function(accessToken, refreshToken, profile, done) {
+  region: "eu",
+  scope: ["wow.profile"]
+}, function (accessToken, refreshToken, profile, done) {
   return done(null, profile);
 }));
 
 // 3. Routes d'authentification
-app.get('/auth/battlenet',
+app.get('/auth/battlenet', (req, res, next) => {
+  console.log("[DEBUG] Lancement de l'auth Battle.net");
   passport.authenticate('battlenet', {
-  scope: ['wow.profile'],
-  state: true
-})
-);
+    scope: ['wow.profile'],
+    state: true
+  })(req, res, next);
+});
+
 app.get('/auth/battlenet/callback',
   passport.authenticate('battlenet', { failureRedirect: '/' }),
   (req, res) => {
@@ -64,6 +67,7 @@ app.get('/auth/battlenet/callback',
     res.redirect('/');
   }
 );
+
 app.get('/logout', (req, res) => {
   req.logout(() => {
     res.clearCookie('battletag');
@@ -105,6 +109,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
