@@ -118,3 +118,10 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
+app.get('/hard-logout', (req, res) => {
+  res.clearCookie('connect.sid'); // cookie de session express
+  res.clearCookie('battletag');   // ton propre cookie
+  req.session.destroy(() => {
+    res.send('Cookies et session supprimés. Fermez cet onglet et reconnectez-vous.');
+  });
+});
