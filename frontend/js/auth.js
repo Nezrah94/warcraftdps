@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
     padding: 6px 10px;
     height: 32px;
   '>
-    👋 ${battletag}
+    ${battletag}
   </div>
   <a href="/logout" style='
     background-color: #f44336;
