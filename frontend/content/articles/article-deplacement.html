@@ -251,4 +251,14 @@
      Mentions légales
     </a>
 </p>
-</footer><script src="./script.js" type="module"></script><script src="./js/auth.js"></script></body></html>
+</footer><script src="./script.js" type="module"></script><script src="./js/auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const main = document.querySelector("main");
+    if (main && !main.classList.contains("markdown-body")) {
+      main.classList.add("markdown-body");
+    }
+  });
+</script>
+
+</body></html>
