@@ -259,3 +259,7 @@
   font-style: italic;
   opacity: 0.8;
 }
+body,
+.markdown-body {
+  font-family: 'Segoe UI', sans-serif !important;
+}
