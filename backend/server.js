@@ -129,8 +129,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+app.get('*', (req, res, next) => {
+  if (req.accepts('html')) {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  } else {
+    next(); // laisse passer les requêtes statiques comme .js, .css, .webp
+  }
 });
 
 // 8. Lancement du serveur
