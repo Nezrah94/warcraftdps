@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
 /* Narrow content container on other pages */
 #about .container,
 #guides .container,
@@ -261,5 +262,10 @@
 }
 body,
 .markdown-body {
-  font-family: 'Segoe UI', sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.markdown-body h1,
+.markdown-body h2 {
+  font-family: 'Orbitron', sans-serif !important;
 }
