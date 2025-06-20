@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
-  saveUninitialized: false, // ← MODIFIÉ
+  saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
     ttl: 14 * 24 * 60 * 60 // 14 jours
@@ -35,9 +35,9 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-// Évite le crash si les variables sont manquantes
+// Vérifier les variables d'environnement obligatoires
 if (!process.env.BNET_CLIENT_ID || !process.env.BNET_CLIENT_SECRET || !process.env.BNET_CALLBACK_URL) {
-  console.error("❌ Erreur : Variables BNET_CLIENT_ID, BNET_CLIENT_SECRET ou BNET_CALLBACK_URL manquantes.");
+  console.error("❌ Erreur : Variables d'environnement manquantes.");
   process.exit(1);
 }
 
@@ -69,6 +69,7 @@ app.get('/logout', (req, res) => {
     });
   });
 });
+
 // 4. API d'articles
 app.get('/api/articles', (req, res) => {
   const articles = [
@@ -95,14 +96,17 @@ app.get('/api/articles', (req, res) => {
 });
 
 // 5. Servir les fichiers frontend statiques
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-// 6. Fallback pour les routes HTML
+// 6. Fallback HTML
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// 7. Démarrage serveur
+// 7. Lancement du serveur
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
