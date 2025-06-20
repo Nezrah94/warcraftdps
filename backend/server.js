@@ -105,7 +105,16 @@ app.get('/api/articles', (req, res) => {
 // 5. Servir les fichiers frontend statiques
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// 6. Fallback HTML
+// 6. Route hard-logout AVANT le fallback
+app.get('/hard-logout', (req, res) => {
+  res.clearCookie('connect.sid'); // cookie de session express
+  res.clearCookie('battletag');   // ton propre cookie
+  req.session.destroy(() => {
+    res.send('Cookies et session supprimés. Fermez cet onglet et reconnectez-vous.');
+  });
+});
+
+// 7. Fallback HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
@@ -114,14 +123,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// 7. Lancement du serveur
+// 8. Lancement du serveur
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
-});
-app.get('/hard-logout', (req, res) => {
-  res.clearCookie('connect.sid'); // cookie de session express
-  res.clearCookie('battletag');   // ton propre cookie
-  req.session.destroy(() => {
-    res.send('Cookies et session supprimés. Fermez cet onglet et reconnectez-vous.');
-  });
 });
