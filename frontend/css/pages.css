@@ -270,3 +270,15 @@
   font-style: italic;
   opacity: 0.8;
 }
+
+
+
+/* TEST FORCE : Doit apparaître clairement */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body p {
+  color: red !important;
+  background: yellow !important;
+  border: 2px solid black !important;
+  padding: 0.5rem !important;
+}
