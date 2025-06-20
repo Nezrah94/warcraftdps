@@ -19,6 +19,12 @@ console.log("[DEBUG] BNET_CALLBACK_URL:", process.env.BNET_CALLBACK_URL);
 // 1. Middlewares nécessaires
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res, next) => {
+  if (req.cookies['connect.sid']) {
+    res.clearCookie('connect.sid');
+  }
+  next();
+});
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
