@@ -52,7 +52,10 @@ passport.use('battlenet', new BattlenetStrategy({
 
 // 3. Routes d'authentification
 app.get('/auth/battlenet',
-  passport.authenticate('battlenet', { state: true })
+  passport.authenticate('battlenet', {
+  scope: ['wow.profile'],
+  state: true
+})
 );
 app.get('/auth/battlenet/callback',
   passport.authenticate('battlenet', { failureRedirect: '/' }),
