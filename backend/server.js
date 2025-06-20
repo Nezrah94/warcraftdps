@@ -112,8 +112,9 @@ app.get('/api/articles', (req, res) => {
   res.json(articles);
 });
 
-// 5. Servir les fichiers frontend statiques
+// Sert les fichiers statiques comme script.js, CSS, images, etc.
 app.use(express.static(path.join(__dirname, '../frontend')));
+app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // 6. Route hard-logout AVANT le fallback
 app.get('/hard-logout', (req, res) => {
