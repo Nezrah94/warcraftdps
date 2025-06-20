@@ -66,7 +66,7 @@ app.get('/auth/battlenet', (req, res, next) => {
   console.log("[DEBUG] Lancement de l'auth Battle.net");
   passport.authenticate('battlenet', {
     scope: ['wow.profile'],
-    state: true
+    state: 'test'
   })(req, res, next);
 });
 
