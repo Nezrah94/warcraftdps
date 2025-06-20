@@ -29,6 +29,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
   saveUninitialized: false,
+   cookie: {
+    sameSite: 'none',
+    secure: true // obligatoire si sameSite='none'
+  },
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
     ttl: 14 * 24 * 60 * 60 // 14 jours
@@ -62,7 +66,7 @@ app.get('/auth/battlenet', (req, res, next) => {
   console.log("[DEBUG] Lancement de l'auth Battle.net");
   passport.authenticate('battlenet', {
     scope: ['wow.profile'],
-    state: false
+    state: true
   })(req, res, next);
 });
 
