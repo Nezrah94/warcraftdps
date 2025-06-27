@@ -142,7 +142,6 @@ app.get('*', (req, res, next) => {
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
-// Catch-all 404
 app.use((req, res) => {
-  res.status(404).sendFile(__dirname + '404.html');
+  res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
