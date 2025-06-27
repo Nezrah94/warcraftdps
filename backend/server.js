@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -29,7 +30,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret_key',
   resave: false,
   saveUninitialized: false,
-   cookie: {
+  cookie: {
     sameSite: 'none',
     secure: true // obligatoire si sameSite='none'
   },
@@ -45,7 +46,6 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-// Vérifier les variables d'environnement obligatoires
 if (!process.env.BNET_CLIENT_ID || !process.env.BNET_CLIENT_SECRET || !process.env.BNET_CALLBACK_URL) {
   console.error("❌ Erreur : Variables d'environnement manquantes.");
   process.exit(1);
@@ -118,30 +118,28 @@ app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // 6. Route hard-logout AVANT le fallback
 app.get('/hard-logout', (req, res) => {
-  res.clearCookie('connect.sid'); // cookie de session express
-  res.clearCookie('battletag');   // ton propre cookie
+  res.clearCookie('connect.sid');
+  res.clearCookie('battletag');
   req.session.destroy(() => {
     res.send('Cookies et session supprimés. Fermez cet onglet et reconnectez-vous.');
   });
 });
 
-// 7. Fallback HTML
+// 7. Route principale
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-app.get('*', (req, res, next) => {
+// 8. Fallback final : 404 personnalisée
+app.use((req, res) => {
   if (req.accepts('html')) {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.status(404).sendFile(path.join(__dirname, '404.html'));
   } else {
-    next(); // laisse passer les requêtes statiques comme .js, .css, .webp
+    res.status(404).send('404 Not Found');
   }
 });
 
-// 8. Lancement du serveur
+// 9. Lancement du serveur
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
-});
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
