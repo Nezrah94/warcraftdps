@@ -133,7 +133,7 @@ app.get('/', (req, res) => {
 // 8. Fallback final : 404 personnalisée
 app.use((req, res) => {
   if (req.accepts('html')) {
-    res.status(404).sendFile(path.join(__dirname, '404.html'));
+    res.status(404).sendFile(path.join(__dirname, '../frontend/404.html'));
   } else {
     res.status(404).send('404 Not Found');
   }
